@@ -473,7 +473,8 @@ dependencies:
         #                            VS Code and JetBrains: rewritten to ${env:VAR}
         #                            and resolved at runtime.
         #                            Kiro: preserved as ${VAR} and resolved at runtime.
-        #                            Cursor/Windsurf/OpenCode/Claude/Gemini: resolved at install time.
+        #                            Cursor: translated to ${env:VAR} and resolved at runtime.
+        #                            Windsurf/OpenCode/Claude/Gemini: resolved at install time.
         #                            Codex: env resolved at install time; a remote
         #                            server's headers are written as
         #                            bearer_token_env_var / env_http_headers and
