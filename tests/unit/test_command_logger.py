@@ -184,6 +184,15 @@ class TestCommandLogger:
         mock_info.assert_called_once_with("Processing 3 files...", symbol="info")
 
     @patch("apm_cli.core.command_logger._rich_info")
+    def test_stale_cleanup_describes_dependency_not_deletion_location(self, mock_info):
+        logger = CommandLogger("test")
+        logger.stale_cleanup("/home/user/local-agent", 6)
+        mock_info.assert_called_once_with(
+            "Cleaned 6 stale deployed files for /home/user/local-agent",
+            symbol="info",
+        )
+
+    @patch("apm_cli.core.command_logger._rich_info")
     def test_dry_run_notice(self, mock_info):
         logger = CommandLogger("test", dry_run=True)
         logger.dry_run_notice("Would compile 3 files")
@@ -373,18 +382,18 @@ class TestInstallLogger:
     @patch("apm_cli.core.command_logger._rich_info")
     def test_stale_cleanup_visible_at_default_verbosity(self, mock_info):
         logger = InstallLogger(verbose=False)
-        logger.stale_cleanup("pkg/repo", 3)
-        assert mock_info.called
-        msg = mock_info.call_args[0][0]
-        assert "3 stale files" in msg
-        assert "pkg/repo" in msg
+        logger.stale_cleanup("/home/user/local-agent", 3)
+        mock_info.assert_called_once_with(
+            "Cleaned 3 stale deployed files for /home/user/local-agent",
+            symbol="info",
+        )
         assert logger.stale_cleaned_total == 3
 
     @patch("apm_cli.core.command_logger._rich_info")
     def test_stale_cleanup_singular_noun(self, mock_info):
         logger = InstallLogger()
         logger.stale_cleanup("pkg", 1)
-        assert "1 stale file " in mock_info.call_args[0][0]
+        assert "1 stale deployed file " in mock_info.call_args[0][0]
 
     @patch("apm_cli.core.command_logger._rich_info")
     def test_stale_cleanup_zero_count_silent(self, mock_info):
